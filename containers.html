@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>Document</title>
+    <script src="js/pixi.min.js"></script>
+
+    <script>
+        let app;
+        let titleScreen;
+        let mainScreen; 
+        let gameOverScreen;
+
+
+            window.onload = function () {
+                app = new PIXI.Application(
+                    {
+                        width: 800,
+                        height: 600,
+                        backgroundColor: 0xAAAAAA
+                    }
+                );
+
+                document.body.appendChild(app.view)
+                window.addEventListener("keyup", switchContainer)
+                app.loader.load()
+
+                    titleScreen = new PIXI.Container()
+                    mainScreen = new PIXI.Container()
+                    gameOverScreen = new PIXI.Container()
+
+                    mainScreen.visible = false; 
+                    gameOverScreen.visible = false;
+
+                    app.stage.addChild(titleScreen)
+                    app.stage.addChild(mainScreen)
+                    app.stage.addChild(gameOverScreen)
+
+                    let redRect = new PIXI.Graphics()
+                    redRect.beginFill(0xFF0000)
+                    redRect.drawRect(0, 0, app.view.width, app.view.height);
+                    titleScreen.addChild(redRect)
+
+                    let greenRect = new PIXI.graphics()
+                    greenRect.beginFill(0x00FF00)
+                    greenRect.drawRect(0, 0, app.view.width, app.view.height);
+                    mainScreen.addChild(greenRect)
+
+                    let blueRect = new PIXI.graphics()
+                    blueRect.beginFill(0x0000FF)
+                    blueRect.drawRect(0, 0, app.view.width, app.view.height);
+                    gameOverScreen.addChild(blueRect)
+            }
+
+            function switchContainer(e) {
+
+            }
+
+        
+    </script>
+</head>
+<body>
+    <div id="keys"></div>
+</body>
+</html>

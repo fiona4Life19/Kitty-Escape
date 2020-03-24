@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>Document</title>
+    <script src="js/pixi.min.js"></script>
+    <script>
+
+    let titleScreen;
+
+
+    window.onload = function () {
+        app = new PIXI.Application(
+            {
+                width: 800,
+                height: 600,
+                backgroundColor: 0xAAAAAA
+            }
+        );
+
+        document.body.appendChild(app.view)
+
+        titleScreen = new PIXI.Container()
+
+        app.stage.addChild(titleScreen)
+
+            
+        let redRect = new PIXI.Graphics()
+        redRect.beginFill(0xFF0000)
+        redRect.drawRect(0, 0, app.view.width, app.view.height);
+        titleScreen.addChild(redRect)
+     }
+
+
+
+
+
+    </script>
+</head>
+<body>
+    <div id="keys"></div>
+</body>
+</html>
