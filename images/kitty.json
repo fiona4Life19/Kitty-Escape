@@ -1,0 +1,76 @@
+{"frames": {
+
+"Run (1).png":
+{
+	"frame": {"x":1,"y":1,"w":110,"h":161},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":44,"y":6,"w":110,"h":161},
+	"sourceSize": {"w":192,"h":168}
+},
+"Run (2).png":
+{
+	"frame": {"x":113,"y":164,"w":109,"h":157},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":7,"w":109,"h":157},
+	"sourceSize": {"w":192,"h":168}
+},
+"Run (3).png":
+{
+	"frame": {"x":336,"y":1,"w":108,"h":147},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":51,"y":9,"w":108,"h":147},
+	"sourceSize": {"w":192,"h":168}
+},
+"Run (4).png":
+{
+	"frame": {"x":1,"y":164,"w":110,"h":157},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":46,"y":7,"w":110,"h":157},
+	"sourceSize": {"w":192,"h":168}
+},
+"Run (5).png":
+{
+	"frame": {"x":113,"y":1,"w":110,"h":161},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":44,"y":6,"w":110,"h":161},
+	"sourceSize": {"w":192,"h":168}
+},
+"Run (6).png":
+{
+	"frame": {"x":225,"y":1,"w":109,"h":159},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":6,"w":109,"h":159},
+	"sourceSize": {"w":192,"h":168}
+},
+"Run (7).png":
+{
+	"frame": {"x":224,"y":164,"w":108,"h":152},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":50,"y":7,"w":108,"h":152},
+	"sourceSize": {"w":192,"h":168}
+},
+"Run (8).png":
+{
+	"frame": {"x":334,"y":162,"w":109,"h":159},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":47,"y":6,"w":109,"h":159},
+	"sourceSize": {"w":192,"h":168}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "kitty.png",
+	"format": "RGBA8888",
+	"size": {"w":445,"h":322},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:799ec00578ecb6674aa8a442512c254f:d49678f33c80233d43a66dced928fc22:4c80c440068349d478012f81a5ac9bcc$"
+}
+}
