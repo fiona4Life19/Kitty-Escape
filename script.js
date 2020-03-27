@@ -3,15 +3,22 @@
 let app;
 let player;
 let enemy;
+let doggy;
 let titleScreen;
 let gameOverScreen;
 let playerSheet = {};
 let background
 let backgroundX = 0
-let backgroundSpeed = 1
+let backgroundSpeed = -1
 let animatedSprite
-let speed = 2
-// let kitty
+let kitty
+let objects
+let mapSheet = {}
+let dirt
+let tileSize = 179.6
+let speed = 1
+let character
+let enemySheet = {}
 
 //Canvas//////////////////////
 
@@ -24,8 +31,52 @@ window.onload = function () {
         }
     );
 
+
+
+    // let kb = new Keyboard()
     document.body.appendChild(app.view)
+    app.view.setAttribute("tabIndex", 0)
+
     this.document.querySelector('#game-div').appendChild(app.view)
+
+
+
+    map = {
+        width: 16,
+        height: 9,
+        tiles: [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ],
+        collision: [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        ]
+    }
+
+    function testCollision(worldX, worldY) {
+        let mapX = Math.floor(worldX / tileSize )
+        let mapY = Math.floor(worldY / tileSize )
+        return map.collision[mapY * map.width + mapX]
+
+    }
+
+
+
 
     //////////////////////////////////
     //preload assets
@@ -33,10 +84,12 @@ window.onload = function () {
     app.loader.baseUrl = "images";
     app.loader
         .add("player", "/player.png")
-        .add("enemy", "/enemy.png")
+        .add("enemy", "/doggy.png")
         .add('background', "/BG.png")
         .add("kitty", "/kitty.png")
         .add("objects", "/environment_objects.png")
+        .add("dirt", "2.png")
+        // .add('doggy', "/doggy.png")
 
 
     app.loader.onComplete.add(initLevel)
@@ -47,6 +100,11 @@ window.onload = function () {
     app.loader.onComplete.add(doneLoading)
     app.loader.onError.add(reportErrors)
 
+
+
+    ///////////////////////////////
+
+    
 
     //////////////////////////////////
     //Containers
@@ -119,26 +177,28 @@ window.onload = function () {
 function doneLoading(e) {
     console.log("DONE LOADING!")
 
+    objects = new PIXI.Sprite.from(app.loader.resources.objects.texture)
 
-    player = new PIXI.Sprite.from(app.loader.resources.player.texture);
-    player.x = 600
-    player.y = app.view.height / 2
-    player.anchor.set(0.5);
+    // player = new PIXI.Sprite.from(app.loader.resources.player.texture);
+    // player.x = 600
+    // player.y = app.view.height / 2
+    // player.anchor.set(0.5);
 
     // background = new PIXI.Sprite.from(app.loader.resources.background.texture);
     // background.x = 200
     // background.y = app.view.height / 2
     // background.anchor.set(0.5);
 
-    enemy = new PIXI.Sprite.from(app.loader.resources.enemy.texture);
-    enemy.x = 16
-    enemy.y = app.view.height / 2
-    enemy.anchor.set(0.5);
+    // enemy = new PIXI.Sprite.from(app.loader.resources.enemy.texture);
+    // enemy.x = 16
+    // enemy.y = app.view.height / 2
+    // enemy.anchor.set(0.5);
 
 
     app.stage.addChild(titleScreen)
     app.stage.addChild(gameOverScreen)
-    app.stage.addChild(enemy);
+    // app.stage.addChild(enemy);
+    // app.stage.addChild(player)
 
 
 
@@ -149,20 +209,53 @@ function doneLoading(e) {
 
  keysDiv = document.querySelector("#keys")
 
-
-}
-////////////////////////////////////
-
-// game functions
-
-function runGameLoop(e) {
-    if(keys["18"]) {
-        app.stage.addChild(player)
-        app.stage.addChild(enemy)
-        return player
+  character = {
+        x: 0, y: 0,
+        vx: 0, vy: 0
     }
-}
 
+    app.ticker.add(() => {
+        kitty.x = character.x
+        kitty.y = character.y
+
+        character.vy = character.vy + 1;
+        character.x += character.vx;
+
+    if (character.vy > 0) {
+        for (let i = 0; i < character.vy; i++) {
+            let testX1 = character.x / tileSize
+            let testX2 = character.x + tileSize - 1
+            let testY = character.y + tileSize * 2
+            if (testCollision(testX1, testY)) {
+                character.vy = 0;
+                break
+            }
+            character.y = character.y + 1;
+        }
+    }
+
+    // if (character.vy < 0) {
+    //     character.y -= character.vy
+    // }
+
+    // if(kb.press.ArrowUp) {
+    //     character.vy = 10
+    // }
+
+
+
+
+
+    function testCollision(worldX, worldY) {
+        let mapX = Math.floor(worldX / tileSize)
+        let mapY = Math.floor(worldY / tileSize)
+        return map.collision[mapY * map.width + mapX]
+    }
+
+
+ })
+
+}
 
 function switchContainer(e) {
     switch (e.key) {
@@ -184,23 +277,135 @@ function switchContainer(e) {
     }
 }
 
-
 function initLevel() {
-    bgBack = createBg(app.loader.resources["background"].texture)
+
+    background = createBg(app.loader.resources["background"].texture)
+    let dirt = createDirt(app.loader.resources["dirt"].texture)
+    createDirt2(app.loader.resources["dirt"].texture)
+    createDirt3(app.loader.resources["dirt"].texture)
+    createDirt4(app.loader.resources["dirt"].texture)
+    createDirt5(app.loader.resources["dirt"].texture)
+    createDirt6(app.loader.resources["dirt"].texture)
+    createDirt7(app.loader.resources["dirt"].texture)
+    createDirt8(app.loader.resources["dirt"].texture)
+    createDirt9(app.loader.resources["dirt"].texture)
+    createDirt10(app.loader.resources["dirt"].texture)
+
+    window.background = background
+    window.dirt = dirt
 }
+
+
+
 
 function createBg(texture) {
     let tiling = new PIXI.TilingSprite(texture, 1000, 800)
     tiling.position.set(0, 0)
     app.stage.addChild(tiling)
+
+    window.tiling = tiling
 }
 
+function createDirt(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 0
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt2(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 100
+    dirt.y = 550
+    app.stage.addChild(dirt)
+
+    window.dirt = dirt
+}
+
+function createDirt3(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 200
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt4(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 300
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt5(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 400
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt6(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 500
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt7(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 600
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt8(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 700
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt9(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 800
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+function createDirt10(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 900
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+
+
+function createDirt2(texture) {
+    let dirt = new PIXI.TilingSprite(texture, 100, 100)
+    dirt.position.set(0, 0)
+    dirt.x = 100
+    dirt.y = 550
+    app.stage.addChild(dirt)
+}
+ 
 
 function doneloadingg(e) {
     createPlayerSheet()
+    createDoggySheet()
     createPlayer()
+    createDoggy()
     app.ticker.add(gameLoop)
 }
+
 
 function createPlayerSheet() {
     let sSheet = new PIXI.BaseTexture.from(app.loader.resources["kitty"].url)
@@ -220,20 +425,51 @@ function createPlayerSheet() {
     ]
 }
 
+function createDoggySheet() {
+    let otherSheet = new PIXI.BaseTexture.from(app.loader.resources["enemy"].url)
+
+    enemySheet["stand"] = [
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(112, 1, 109, 164))
+    ]
+
+    enemySheet["run"] = [
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(113, 167, 109, 161)),
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(335, 167, 109, 152)),
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(224, 167, 110, 161)),
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(1, 1, 109, 164)),
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(223, 1, 109, 164)),
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(1, 168, 110, 157)),
+        new PIXI.Texture(otherSheet, new PIXI.Rectangle(334, 1, 109, 164)),
+    ]
+}
+
 
 function createPlayer() {
     kitty = new PIXI.AnimatedSprite(playerSheet.stand)
     kitty.anchor.set(0.5);
     kitty.animationSpeed = .5;
     kitty.loop = false;
-    kitty.x = app.view.height / 2;
-    kitty.y = app.view.height / 2;
+    kitty.x = app.view.width / 2;
+    kitty.y = app.view.height / 1.65;
     app.stage.addChild(kitty)
-    kitty.play()
+    kitty.play()     
 }
+
+function createDoggy() {
+    doggy = new PIXI.AnimatedSprite(enemySheet.stand)
+    doggy.anchor.set(0.5);
+    doggy.animationSpeed = .5;
+    doggy.x = app.view.width / 8;
+    doggy.y = app.view.height / 1.65;
+    app.stage.addChild(doggy)
+    doggy.play()     
+}
+
+
 
 function keysDown(e) {
     keys[e.keyCode] = true;
+    doggy.loop = true
 }
 
 function keysUp(e) {
@@ -241,9 +477,16 @@ function keysUp(e) {
     kitty.loop = false;
 }
 
-function gameLoop() {
+function gameLoop(delta) {
+    doggy.x += 1
 
-    enemy.x += 1
+    // if (rectsIntersect(enemy, kitty)) {
+    //    speed = 0
+    // }
+    // if (rectsIntersect(kitty, dirt)) {
+    // }
+    
+    
    
     if (keys["68"]) {
       if(!kitty.playing) {
@@ -251,21 +494,37 @@ function gameLoop() {
           kitty.loop = true;
           kitty.animationSpeed = .5
           kitty.play()
+        
+        
       }
-      kitty.x += speed
+    updateBackground()
+    //   kitty.x += speed
     }
 
-    if (rectsIntersect(player, enemy)) {
-    
+    if(keys["13"]) {
+          kitty.vy =  -10
     }
+
+    if(keys["89"]) {
+        doggy.textures = enemySheet.run
+        doggy.loop = true;
+        doggy.animationSpeed = .5
+        doggy.play()
+        doggy.x += 1
+    }
+
+
+
 }
 
-function rectsIntersect(a, b) {
+function rectsIntersect(a,b) {
     let aBox = a.getBounds()
     let bBox = b.getBounds()
 
     return aBox.x + aBox.width > bBox.x &&
-        aBox.x < bBox.x + bBox.width
+        aBox.x < bBox.x + bBox.width && 
+        aBox.y + aBox.height > bBox.y &&
+        aBox.y < bBox.y + bBox.height
 }
 
 function showProgress(e) {
@@ -274,6 +533,11 @@ function showProgress(e) {
 
 function reportErrors(e) {
     console.log("ERROR: " + e.message)
+}
+
+function updateBackground() {
+   backgroundX = backgroundX + backgroundSpeed
+   tiling.tilePosition.x = backgroundX
 }
 
 
