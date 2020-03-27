@@ -71,10 +71,15 @@ app.view.setAttribute("tabIndex", 0)
 
 
 app.loader
+    .add("jump", "/images/jumpkitty.png")
     .add("dirt", "/images/test.png").load((loader, resources) => {
 
         let kb = new Keyboard()
         kb.watch(app.view)
+
+
+let sSheet = new PIXI.BaseTexture.from(app.loader.resources["jump"].url)
+ playerSheet["run"] = new PIXI.Texture(sSheet, new PIXI.Rectangle(113, 1, 108, 159))
 
 
  
@@ -139,10 +144,10 @@ app.ticker.add((delta) => {
     character.x += character.vx;
 
 
-    // let touchingGround = testCollision(
-    //     character.x, 
-    //     character.y + tileSize * 2 + 1
-    // )
+    let touchingGround = testCollision(
+        character.x, 
+        character.y + tileSize * 2 + 1
+    )
     
 
     if(character.vy > 0) {
@@ -164,19 +169,34 @@ app.ticker.add((delta) => {
 
     if(kb.pressed.ArrowUp) {
         character.vy = -10
+        background.texture = playerSheet.run
     }
 
-    // if(!touchingGround)
-    //     dirt.texture = playerSheet.run
+    if (kb.pressed.ArrowRight) {
+        character.vx += 2
+    }
+
+    if (character.vx > 0) {
+        character.vx -= 1
+    }
+    if (character.vx < 0) {
+        character.vx += 1
+    }
+
+    
+
+if (!touchingGround) {
+        background.texture = playerSheet.run
     //     dirt.loop = true;
     //     dirt.play()
+}
 
 
 
 
 
    
-        // let sSheet = new PIXI.BaseTexture.from(app.loader.resources[""].url)
+        // let sSheet = new PIXI.BaseTexture.from(app.loader.resources["jump"].url)
 
         // playerSheet["stand"] = [
         //     new PIXI.Texture(sSheet, new PIXI.Rectangle(1, 1, 110, 161))

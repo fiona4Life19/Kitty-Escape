@@ -15,10 +15,13 @@ let kitty
 let objects
 let mapSheet = {}
 let dirt
-let tileSize = 179.6
+let tileSize = 96
 let speed = 1
-let character
 let enemySheet = {}
+let character = {
+    x: 0, y: 0,
+    vx: 0, vy: 0
+}
 
 //Canvas//////////////////////
 
@@ -43,7 +46,7 @@ window.onload = function () {
 
     map = {
         width: 16,
-        height: 9,
+        height: 10,
         tiles: [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -74,6 +77,27 @@ window.onload = function () {
         return map.collision[mapY * map.width + mapX]
 
     }
+
+    class Keyboard {
+        constructor() {
+            this.pressed = {}
+        }
+
+        watch(el) {
+            el.addEventListener("keydown", (e) => {
+                this.pressed[e.key] = true
+            })
+            el.addEventListener("keyup", (e) => {
+                this.pressed[e.key] = false
+            })
+        }
+    }
+
+    document.body.appendChild(app.view)
+    app.view.setAttribute("tabIndex", 0)
+
+    let kb = new Keyboard()
+    kb.watch(app.view)
 
 
 
@@ -171,7 +195,7 @@ window.onload = function () {
     titleScreen.addChild(text1)
     gameBackground.addChild(text2)
     gameOverScreen.addChild(text3)
-}
+
 
 
 function doneLoading(e) {
@@ -209,10 +233,7 @@ function doneLoading(e) {
 
  keysDiv = document.querySelector("#keys")
 
-  character = {
-        x: 0, y: 0,
-        vx: 0, vy: 0
-    }
+
 
     app.ticker.add(() => {
         kitty.x = character.x
@@ -226,7 +247,7 @@ function doneLoading(e) {
             let testX1 = character.x / tileSize
             let testX2 = character.x + tileSize - 1
             let testY = character.y + tileSize * 2
-            if (testCollision(testX1, testY)) {
+            if (testCollision(testX1, testY || testCollision(testX2, testY1))) {
                 character.vy = 0;
                 break
             }
@@ -234,27 +255,29 @@ function doneLoading(e) {
         }
     }
 
-    // if (character.vy < 0) {
-    //     character.y -= character.vy
-    // }
+        if (character.vy < 0) {
+            character.y += character.vy
+        }
 
-    // if(kb.press.ArrowUp) {
-    //     character.vy = 10
-    // }
+        if (kb.pressed.ArrowUp) {
+            character.vy = -10
+        }
+
+        // if (kb.pressed.ArrowRight) {
+        //     character.vx += 2
+        // }
+
+        // if (character.vx > 0) {
+        //     character.vx -= 1
+        // }
+        // if (character.vx < 0) {
+        //     character.vx += 1
+        // }
 
 
 
-
-
-    function testCollision(worldX, worldY) {
-        let mapX = Math.floor(worldX / tileSize)
-        let mapY = Math.floor(worldY / tileSize)
-        return map.collision[mapY * map.width + mapX]
+        })
     }
-
-
- })
-
 }
 
 function switchContainer(e) {
@@ -294,9 +317,6 @@ function initLevel() {
     window.background = background
     window.dirt = dirt
 }
-
-
-
 
 function createBg(texture) {
     let tiling = new PIXI.TilingSprite(texture, 1000, 800)
@@ -449,7 +469,7 @@ function createPlayer() {
     kitty.anchor.set(0.5);
     kitty.animationSpeed = .5;
     kitty.loop = false;
-    kitty.x = app.view.width / 2;
+    kitty.x = 200
     kitty.y = app.view.height / 1.65;
     app.stage.addChild(kitty)
     kitty.play()     
@@ -475,6 +495,7 @@ function keysDown(e) {
 function keysUp(e) {
     keys[e.keyCode] = false;
     kitty.loop = false;
+    character.vx = 0
 }
 
 function gameLoop(delta) {
@@ -494,10 +515,16 @@ function gameLoop(delta) {
           kitty.loop = true;
           kitty.animationSpeed = .5
           kitty.play()
-        
+          character.vx += 2
+        //   if (character.vx > 0) {
+        //       character.vx -= 1
+        //   }
+        //   if (character.vx < 0) {
+        //       character.vx += 1
+        //   }
         
       }
-    updateBackground()
+      updateBackground()
     //   kitty.x += speed
     }
 
@@ -512,9 +539,6 @@ function gameLoop(delta) {
         doggy.play()
         doggy.x += 1
     }
-
-
-
 }
 
 function rectsIntersect(a,b) {
