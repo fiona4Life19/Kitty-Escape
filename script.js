@@ -1,5 +1,5 @@
 ///////// Global Variables//////////
-
+let sound 
 let sprite 
 let sprite2
 let sprite3
@@ -20,7 +20,7 @@ let background
 let backgroundX = 0
 let backgroundSpeed = -.5
 let backgroundX2 = 0
-let backgroundSpeed2 = -5
+let backgroundSpeed2 = -4
 let treeX = 0
 let treeSpeed = -1
 let animatedSprite
@@ -28,7 +28,7 @@ let kitty
 let objects
 let mapSheet = {}
 let dirt
-let tileSize = 52
+let tileSize = 98
 let speed = 1
 let enemySheet = {}
 let character = {
@@ -102,7 +102,7 @@ window.onload = function () {
                 this.pressed[e.key] = true
             })
             el.addEventListener("keyup", (e) => {
-                this.pressed[e.key] = false
+                this.pressed[e.key] = true
             })
         }
     }
@@ -127,15 +127,16 @@ window.onload = function () {
         .add('tree', "/cool-map.png")
         .add("tree3", "/tree-map.png")
         .add("treetest", "/Tree_3.png")
+        // .add('music', "/music.wav")
 
     sprite = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite.interactive = true;
-    sprite.hitArea = new PIXI.Rectangle(800, 325, 150, 100);
+    sprite.hitArea = new PIXI.Rectangle(870, 0, 60, 200);
     sprite2 = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite2.interactive = true;
-    sprite2.hitArea = new PIXI.Rectangle(1110, 325, 50, 100);
+    sprite2.hitArea = new PIXI.Rectangle(1160, 325, 58, 200);
     // sprite3 = new PIXI.Sprite(app.loader.resources.tree.texture);
-    // sprite3.interactive = true;
+    // sprite3.interactive = true
     // sprite3.hitArea = new PIXI.Rectangle(1600, 400, 50, 300);
     // sprite4 = new PIXI.Sprite(app.loader.resources.tree.texture);
     // sprite4.interactive = true;
@@ -147,7 +148,8 @@ window.onload = function () {
    mainScreen = new PIXI.Container()
    mainScreen.addChild(treeform)
 
-
+sound = PIXI.Sound
+    
 
 
    floor = new PIXI.Container()
@@ -303,7 +305,7 @@ function doneLoading(e) {
             character.y += character.vy
         }
         if(kb.pressed.Enter) {
-           app.ticker.add(gameLoop)
+           gameLoop()
         }
 
         })
@@ -361,8 +363,9 @@ function createBg(texture) {
 }
 
 function createTree(texture) {
-    let tiling2 = new PIXI.TilingSprite(texture, 1000, 800)
+    let tiling2 = new PIXI.TilingSprite(texture, 2000, 800)
     tiling2.position.set(0, 0)
+    // tiling2.x = -300
     tiling2.y = - 100
     app.stage.addChild(tiling2)
 
@@ -457,10 +460,13 @@ function createDoggy() {
 //     app.stage.addChild(tree3)
 // }
 
-
+function playmusic() {
+    PIXI.sound.play("music")
+}
 
 function keysDown(e) {
     keys[e.keyCode] = true;
+    // console.log(e.keyCode())
     doggy.loop = true
 }
 
@@ -471,8 +477,8 @@ function keysUp(e) {
 }
 
 
-
 function gameLoop(delta) {
+  
     doggy.x += 1
 
     sprite.hitArea.x -= 5
@@ -502,11 +508,12 @@ function gameLoop(delta) {
 
     if (rectsIntersect(kitty, sprite)) {
         console.log("hit")
-        // gameOverScreen.visible = true
+       app.ticker.stop()
     }
 
     if (rectsIntersect2(kitty, sprite2)) {
         console.log("hit")
+        app.ticker.stop()
         // gameOverScreen.visible = true
     }
 
@@ -519,17 +526,19 @@ function gameLoop(delta) {
     
     
    
-    if (keys["68"]) {
-    //   if(!kitty.playing) {
-    //       kitty.textures = playerSheet.run
-    //       kitty.loop = true;
-    //       kitty.animationSpeed = .5
-    //       kitty.play()
-    //       character.vx += 2
-    //     //   drawTree()
-        app.start()  
-        console.log("hello")    
-    }
+    // if (keys["68"]) {
+    // //   if(!kitty.playing) {
+    // //       kitty.textures = playerSheet.run
+    // //       kitty.loop = true;
+    // //       kitty.animationSpeed = .5
+    // //       kitty.play()
+    // //       character.vx += 2
+    // //     //   drawTree()
+    // //     console.log("hello")    
+    // }
+        
+
+// }
     
     if (keys["89"]) {
  
@@ -539,8 +548,8 @@ function gameLoop(delta) {
       
     // }
 
-    if (keys["13"]) {
-          character.vy =  -20
+    if (keys["74"]) {
+          character.vy =  -16
         //   drawTree()
         //   updateTree1()
     }
