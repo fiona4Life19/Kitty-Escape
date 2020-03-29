@@ -1,5 +1,14 @@
 ///////// Global Variables//////////
 
+let sprite 
+let sprite2
+let sprite3
+let sprite4
+let obj1
+let tree3
+let newTree
+let tree
+let floor
 let app;
 let player;
 let enemy;
@@ -9,13 +18,17 @@ let gameOverScreen;
 let playerSheet = {};
 let background
 let backgroundX = 0
-let backgroundSpeed = -1
+let backgroundSpeed = -.5
+let backgroundX2 = 0
+let backgroundSpeed2 = -5
+let treeX = 0
+let treeSpeed = -1
 let animatedSprite
 let kitty
 let objects
 let mapSheet = {}
 let dirt
-let tileSize = 96
+let tileSize = 52
 let speed = 1
 let enemySheet = {}
 let character = {
@@ -23,12 +36,13 @@ let character = {
     vx: 0, vy: 0
 }
 
+
 //Canvas//////////////////////
 
 window.onload = function () {
     app = new PIXI.Application(
         {
-            width: 1000,
+            width: 1200,
             height: 800,
             backgroundColor: 0xAAAAAA
         }
@@ -59,7 +73,7 @@ window.onload = function () {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
         collision: [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -99,9 +113,6 @@ window.onload = function () {
     let kb = new Keyboard()
     kb.watch(app.view)
 
-
-
-
     //////////////////////////////////
     //preload assets
 
@@ -113,10 +124,41 @@ window.onload = function () {
         .add("kitty", "/kitty.png")
         .add("objects", "/environment_objects.png")
         .add("dirt", "2.png")
-        // .add('doggy', "/doggy.png")
+        .add('tree', "/cool-map.png")
+        .add("tree3", "/tree-map.png")
+        .add("treetest", "/Tree_3.png")
+
+    sprite = new PIXI.Sprite(app.loader.resources.tree.texture);
+    sprite.interactive = true;
+    sprite.hitArea = new PIXI.Rectangle(800, 325, 150, 100);
+    sprite2 = new PIXI.Sprite(app.loader.resources.tree.texture);
+    sprite2.interactive = true;
+    sprite2.hitArea = new PIXI.Rectangle(1110, 325, 50, 100);
+    // sprite3 = new PIXI.Sprite(app.loader.resources.tree.texture);
+    // sprite3.interactive = true;
+    // sprite3.hitArea = new PIXI.Rectangle(1600, 400, 50, 300);
+    // sprite4 = new PIXI.Sprite(app.loader.resources.tree.texture);
+    // sprite4.interactive = true;
+    // sprite4.hitArea = new PIXI.Rectangle(1800, 400, 50, 300);
+   
+
+
+    let treeform = new PIXI.Sprite(app.loader.resources.treetest.texture)
+   mainScreen = new PIXI.Container()
+   mainScreen.addChild(treeform)
+
+
+
+
+   floor = new PIXI.Container()
+        for(var i = 0; i <= 9; i += 1) {
+            let sprite = new this.PIXI.Sprite(app.loader.resources.dirt.texture)
+            floor.addChild(sprite)
+        }
 
 
     app.loader.onComplete.add(initLevel)
+    // app.loader.onStart.add(gameLoop)
     app.loader.load()
     app.loader.load(doneloadingg)
 
@@ -124,6 +166,7 @@ window.onload = function () {
     app.loader.onComplete.add(doneLoading)
     app.loader.onError.add(reportErrors)
 
+   
 
 
     ///////////////////////////////
@@ -203,26 +246,28 @@ function doneLoading(e) {
 
     objects = new PIXI.Sprite.from(app.loader.resources.objects.texture)
 
-    // player = new PIXI.Sprite.from(app.loader.resources.player.texture);
-    // player.x = 600
-    // player.y = app.view.height / 2
-    // player.anchor.set(0.5);
+    function drawTree() {
+        tree = new PIXI.Sprite.from(app.loader.resources.treetest.texture);
+        tree.x = 16
+        tree.y = app.view.height / 2
+        tree.anchor.set(0.5);
+    }
 
-    // background = new PIXI.Sprite.from(app.loader.resources.background.texture);
-    // background.x = 200
-    // background.y = app.view.height / 2
-    // background.anchor.set(0.5);
+    newTree = new PIXI.Sprite.from(app.loader.resources.background.texture);
+    newTree.x = 200
+    newTree.y = app.view.height / 2
+    newTree.anchor.set(0.5);
 
-    // enemy = new PIXI.Sprite.from(app.loader.resources.enemy.texture);
-    // enemy.x = 16
-    // enemy.y = app.view.height / 2
-    // enemy.anchor.set(0.5);
+    enemy = new PIXI.Sprite.from(app.loader.resources.enemy.texture);
+    enemy.x = 16
+    enemy.y = app.view.height / 2
+    enemy.anchor.set(0.5);
 
 
     app.stage.addChild(titleScreen)
     app.stage.addChild(gameOverScreen)
-    // app.stage.addChild(enemy);
-    // app.stage.addChild(player)
+    app.stage.addChild(floor);
+    app.stage.addChild(mainScreen)
 
 
 
@@ -234,9 +279,8 @@ function doneLoading(e) {
  keysDiv = document.querySelector("#keys")
 
 
-
     app.ticker.add(() => {
-        kitty.x = character.x
+        // kitty.x = character.x
         kitty.y = character.y
 
         character.vy = character.vy + 1;
@@ -258,23 +302,9 @@ function doneLoading(e) {
         if (character.vy < 0) {
             character.y += character.vy
         }
-
-        if (kb.pressed.ArrowUp) {
-            character.vy = -10
+        if(kb.pressed.Enter) {
+           app.ticker.add(gameLoop)
         }
-
-        // if (kb.pressed.ArrowRight) {
-        //     character.vx += 2
-        // }
-
-        // if (character.vx > 0) {
-        //     character.vx -= 1
-        // }
-        // if (character.vx < 0) {
-        //     character.vx += 1
-        // }
-
-
 
         })
     }
@@ -303,20 +333,24 @@ function switchContainer(e) {
 function initLevel() {
 
     background = createBg(app.loader.resources["background"].texture)
-    let dirt = createDirt(app.loader.resources["dirt"].texture)
-    createDirt2(app.loader.resources["dirt"].texture)
-    createDirt3(app.loader.resources["dirt"].texture)
-    createDirt4(app.loader.resources["dirt"].texture)
-    createDirt5(app.loader.resources["dirt"].texture)
-    createDirt6(app.loader.resources["dirt"].texture)
-    createDirt7(app.loader.resources["dirt"].texture)
-    createDirt8(app.loader.resources["dirt"].texture)
-    createDirt9(app.loader.resources["dirt"].texture)
-    createDirt10(app.loader.resources["dirt"].texture)
-
-    window.background = background
-    window.dirt = dirt
+    let dirt = createDirt(app.loader.resources["dirt"].texture)   
+    createTree(app.loader.resources["tree"].texture)
 }
+
+function createMapsheet() {
+    let what = new PIXI.BaseTexture.from(app.loader.resources["tree3"].url)
+    mapSheet['tree1'] = [new PIXI.Texture(what, PIXI.Rectangle(1, 1, 889, 303))]
+}
+
+function createTree1(texture) 
+{
+  obj1 = new PIXI.TilingSprite(texture, 1000, 800)
+  obj1.position.set(0.5)
+  app.stage.addChild(obj1)
+
+  window.obj1 = obj1
+}
+
 
 function createBg(texture) {
     let tiling = new PIXI.TilingSprite(texture, 1000, 800)
@@ -326,104 +360,30 @@ function createBg(texture) {
     window.tiling = tiling
 }
 
+function createTree(texture) {
+    let tiling2 = new PIXI.TilingSprite(texture, 1000, 800)
+    tiling2.position.set(0, 0)
+    tiling2.y = - 100
+    app.stage.addChild(tiling2)
+
+    window.tiling2 = tiling2
+}
+
 function createDirt(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 0
-    dirt.y = 550
-    app.stage.addChild(dirt)
+    let dirtTiling2 = new PIXI.TilingSprite(texture, 1000, 100)
+    dirtTiling2.position.set(0, 0)
+    dirtTiling2.x = 0
+    dirtTiling2.y = 550
+    app.stage.addChild(dirtTiling2)
+    window.dirtTiling2 = dirtTiling2
 }
-
-function createDirt2(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 100
-    dirt.y = 550
-    app.stage.addChild(dirt)
-
-    window.dirt = dirt
-}
-
-function createDirt3(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 200
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-function createDirt4(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 300
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-function createDirt5(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 400
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-function createDirt6(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 500
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-function createDirt7(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 600
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-function createDirt8(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 700
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-function createDirt9(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 800
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-function createDirt10(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 900
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
-
-
-function createDirt2(texture) {
-    let dirt = new PIXI.TilingSprite(texture, 100, 100)
-    dirt.position.set(0, 0)
-    dirt.x = 100
-    dirt.y = 550
-    app.stage.addChild(dirt)
-}
- 
 
 function doneloadingg(e) {
     createPlayerSheet()
     createDoggySheet()
     createPlayer()
     createDoggy()
-    app.ticker.add(gameLoop)
+    // createMapsheet()
 }
 
 
@@ -445,6 +405,7 @@ function createPlayerSheet() {
     ]
 }
 
+
 function createDoggySheet() {
     let otherSheet = new PIXI.BaseTexture.from(app.loader.resources["enemy"].url)
 
@@ -465,12 +426,14 @@ function createDoggySheet() {
 
 
 function createPlayer() {
-    kitty = new PIXI.AnimatedSprite(playerSheet.stand)
+    kitty = new PIXI.AnimatedSprite(playerSheet.run)
     kitty.anchor.set(0.5);
     kitty.animationSpeed = .5;
-    kitty.loop = false;
+    kitty.loop = true;
+    kitty.scale.x = .75
+    kitty.scale.y = .75
     kitty.x = 200
-    kitty.y = app.view.height / 1.65;
+    kitty.y = 400
     app.stage.addChild(kitty)
     kitty.play()     
 }
@@ -486,6 +449,15 @@ function createDoggy() {
 }
 
 
+// function drawTree(texture) {
+//     tree3 = new PIXI.TilingSprite(texture, 200, 200)
+//     tree3.position.set(0, 0)
+//     tree3.x = 800
+//     tree3.y = 250
+//     app.stage.addChild(tree3)
+// }
+
+
 
 function keysDown(e) {
     keys[e.keyCode] = true;
@@ -494,56 +466,115 @@ function keysDown(e) {
 
 function keysUp(e) {
     keys[e.keyCode] = false;
-    kitty.loop = false;
+    // kitty.loop = false;
     character.vx = 0
 }
+
+
 
 function gameLoop(delta) {
     doggy.x += 1
 
-    // if (rectsIntersect(enemy, kitty)) {
-    //    speed = 0
-    // }
+    sprite.hitArea.x -= 5
+    sprite2.hitArea.x -= 5
+    // sprite3.hitArea.x -= 5
+    // sprite4.hitArea.x -= 5
+
+
+  if (sprite.hitArea.x < 0) {
+      resetSpriteHitArea()
+  }
+  if (sprite2.hitArea.x < 0) {
+      resetSpriteHitArea2()
+  }
+//   if (sprite3.hitArea.x < 0) {
+//       resetSpriteHitArea()
+//   }
+//   if (sprite4.hitArea.x < 0) {
+//       resetSpriteHitArea2()
+//   }
+  
+     // drawRandomTree()
+    // updateHitArea()
+    updateBackground()
+    updateTree()
+    updateDirt()
+
+    if (rectsIntersect(kitty, sprite)) {
+        console.log("hit")
+        // gameOverScreen.visible = true
+    }
+
+    if (rectsIntersect2(kitty, sprite2)) {
+        console.log("hit")
+        // gameOverScreen.visible = true
+    }
+
+
+
     // if (rectsIntersect(kitty, dirt)) {
     // }
+        //   true
+
     
     
    
     if (keys["68"]) {
-      if(!kitty.playing) {
-          kitty.textures = playerSheet.run
-          kitty.loop = true;
-          kitty.animationSpeed = .5
-          kitty.play()
-          character.vx += 2
-        //   if (character.vx > 0) {
-        //       character.vx -= 1
-        //   }
-        //   if (character.vx < 0) {
-        //       character.vx += 1
-        //   }
-        
-      }
-      updateBackground()
-    //   kitty.x += speed
+    //   if(!kitty.playing) {
+    //       kitty.textures = playerSheet.run
+    //       kitty.loop = true;
+    //       kitty.animationSpeed = .5
+    //       kitty.play()
+    //       character.vx += 2
+    //     //   drawTree()
+        app.start()  
+        console.log("hello")    
+    }
+    
+    if (keys["89"]) {
+ 
+    }
+    
+    
+      
+    // }
+
+    if (keys["13"]) {
+          character.vy =  -20
+        //   drawTree()
+        //   updateTree1()
     }
 
-    if(keys["13"]) {
-          kitty.vy =  -10
-    }
-
-    if(keys["89"]) {
-        doggy.textures = enemySheet.run
-        doggy.loop = true;
-        doggy.animationSpeed = .5
-        doggy.play()
-        doggy.x += 1
-    }
+    // if(keys["89"]) {
+    //     doggy.textures = enemySheet.rund
+    //     doggy.loop = true;
+    //     doggy.animationSpeed = .5
+    //     doggy.play()
+    //     doggy.x += .5
+    // }
 }
 
 function rectsIntersect(a,b) {
     let aBox = a.getBounds()
-    let bBox = b.getBounds()
+    let bBox = b.hitArea
+
+    aBox.width -= 125
+
+   window.aBox = aBox
+
+    return aBox.x + aBox.width > bBox.x &&
+        aBox.x < bBox.x + bBox.width && 
+        aBox.y + aBox.height > bBox.y &&
+        aBox.y < bBox.y + bBox.height
+}
+
+function rectsIntersect2(a,b) {
+    let aBox = a.getBounds()
+    let bBox = b.hitArea
+
+    aBox.width -= 125
+
+   window.aBox = aBox
 
     return aBox.x + aBox.width > bBox.x &&
         aBox.x < bBox.x + bBox.width && 
@@ -563,5 +594,49 @@ function updateBackground() {
    backgroundX = backgroundX + backgroundSpeed
    tiling.tilePosition.x = backgroundX
 }
+function updateDirt() {
+   backgroundX2 = backgroundX2 + backgroundSpeed2
+   dirtTiling2.tilePosition.x = backgroundX2
+}
+
+function updateTree() {
+    backgroundX2 = backgroundX2 + backgroundSpeed2
+    tiling2.tilePosition.x = backgroundX2
+}
+
+function resetSpriteHitArea() {
+    sprite.hitArea.x = 1200
+}
+function resetSpriteHitArea2() {
+    sprite2.hitArea.x = 1200
+}
+// function resetSpriteHitArea3() {
+//     sprite3.hitArea.x = 1200
+// }
+// function resetSpriteHitArea4() {
+//     sprite4.hitArea.x = 1200
+// }
+
+
+// function updateTree3() {
+//     tree3.x -= 1
+// }
+
+function drawTree() {
+    let newTree = new PIXI.Sprite.from(app.loader.resources.treetest.texture)
+    newTree.x = Math.random(800)
+    newTree.y = 400
+    app.stage.addChild(newTree)
+}
+
+function updateTree1() {
+    newTree.x -= 1
+}
+
+
+function drawRandomTree() {
+    setInterval(drawTree(), 3000)
+}
+
 
 
