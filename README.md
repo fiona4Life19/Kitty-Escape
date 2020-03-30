@@ -1,8 +1,6 @@
-# Kitty-Escape
-
 # README
 
-# Sprouting Potatoes 
+# Kitty-Escape
 
 [Kitty Escape Live](https://fiona4life19.github.io/Kitty-Escape/)
 
@@ -17,8 +15,8 @@ Kitty Escape features two character each with their own animations that give the
 ![Index](/images/animations.png) 
 
 
-## Show Page 
+## Gravity
 
-The Sprouting Potatoes show page three sections the first being details about a movie. The second and third sections feature a list of actors for that movie, and a collection of reviews. 
+Kitty Escape implements a system of gravity and collision to test the users timing in jumping over the tree and crate obstacles.
 
-![Show](/app/assets/images/show.png) 
+![Show](images/jumping.png) 
