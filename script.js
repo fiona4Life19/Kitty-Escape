@@ -134,7 +134,7 @@ window.onload = function () {
 
     sprite = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite.interactive = true;
-    sprite.hitArea = new PIXI.Rectangle(715, 350, 1, 800);
+    sprite.hitArea = new PIXI.Rectangle(795, 350, 1, 800);
     sprite2 = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite2.interactive = true;
     sprite2.hitArea = new PIXI.Rectangle(1120, 320, 1, 800);
@@ -524,7 +524,7 @@ function gameLoop(delta) {
 
     if (rectsIntersect(kitty, sprite)) {
         console.log("hit")
-        // app.stop()
+        app.stop()
         // titleScreen.visible = true
         // gameOverScreen.visible = true
     }
