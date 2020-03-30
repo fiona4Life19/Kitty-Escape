@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <title>Document</title>
+    <script src="js/pixi.min.js"></script>
+
+    <script>
+        let app;
+        let titleScreen;
+        let mainScreen; 
+        let endScreen;
+
+
+            window.onload = function () {
+                app = new PIXI.Application(
+                    {
+                        width: 800,
+                        height: 600,
+                        backgroundColor: 0xAAAAAA
+                    }
+                );
+
+                document.body.appendChild(app.view)
+                window.addEventListener("keyup", switchContainer)
+
+                titleScreen = new PIXI.Container()
+                mainScreen = new PIXI.Container()
+                endScreen = new PIXI.Container()
+
+                titleScreen.visible = false
+                mainScreen.visible = false
+                endScreen.visible = true
+
+                app.stage.addChild(titleScreen)
+                app.stage.addChild(mainScreen)
+                app.stage.addChild(endScreen)
+
+                let redRect = new PIXI.Graphics()
+                redRect.beginFill(0xFF0000)
+                redRect.drawRect(0,0, app.view.width, app.view.height)
+                titleScreen.addChild(redRect)
+
+                text3 = new PIXI.Text("Game Over Click 2 to Restart")
+                text3.anchor.set(0.5)
+                text3.x = app.view.width / 2
+                text3.y = app.view.height / 2
+                text3.style = new PIXI.TextStyle({
+                    fill: 0x00000,
+                    fontSize: 40,
+                    fontStyle: "Arcade",
+                    fontStyle: "bold",
+                    stroke: 0xFFFFFF,
+                    strokeThickness: 3
+                })
+                endScreen.addChild(text3)
+
+        }
+
+        function switchContainer(e) {
+
+        }
+
+        
+    </script>
+</head>
+<body>
+    <div id="keys"></div>
+</body>
+</html>

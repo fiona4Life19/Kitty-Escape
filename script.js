@@ -1,4 +1,6 @@
 ///////// Global Variables//////////
+let button
+let text2
 let sound 
 let sprite 
 let sprite2
@@ -20,7 +22,7 @@ let background
 let backgroundX = 0
 let backgroundSpeed = -.5
 let backgroundX2 = 0
-let backgroundSpeed2 = -4
+let backgroundSpeed2 = -5
 let treeX = 0
 let treeSpeed = -1
 let animatedSprite
@@ -28,7 +30,7 @@ let kitty
 let objects
 let mapSheet = {}
 let dirt
-let tileSize = 98
+let tileSize = 100
 let speed = 1
 let enemySheet = {}
 let character = {
@@ -118,7 +120,8 @@ window.onload = function () {
 
     app.loader.baseUrl = "images";
     app.loader
-        .add("player", "/player.png")
+        .add("player", "/Run_1.png")
+        .add("defeat", "/player.png")
         .add("enemy", "/doggy.png")
         .add('background', "/BG.png")
         .add("kitty", "/kitty.png")
@@ -131,10 +134,10 @@ window.onload = function () {
 
     sprite = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite.interactive = true;
-    sprite.hitArea = new PIXI.Rectangle(870, 0, 60, 200);
+    sprite.hitArea = new PIXI.Rectangle(715, 350, 1, 800);
     sprite2 = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite2.interactive = true;
-    sprite2.hitArea = new PIXI.Rectangle(1160, 325, 58, 200);
+    sprite2.hitArea = new PIXI.Rectangle(1120, 320, 1, 800);
     // sprite3 = new PIXI.Sprite(app.loader.resources.tree.texture);
     // sprite3.interactive = true
     // sprite3.hitArea = new PIXI.Rectangle(1600, 400, 50, 300);
@@ -144,19 +147,19 @@ window.onload = function () {
    
 
 
-    let treeform = new PIXI.Sprite(app.loader.resources.treetest.texture)
-   mainScreen = new PIXI.Container()
-   mainScreen.addChild(treeform)
+    player = new PIXI.Sprite(app.loader.resources.player.texture)
+    player.anchor.set(0.5)
+    player.x = app.width / 2
+    player.y = app.height / 2
+    // app.stage.addChild(treeform)
 
-sound = PIXI.Sound
+
+
+    mainScreen = new PIXI.Container()
+    // mainScreen.addChild(treeform)
+
+    sound = PIXI.Sound
     
-
-
-   floor = new PIXI.Container()
-        for(var i = 0; i <= 9; i += 1) {
-            let sprite = new this.PIXI.Sprite(app.loader.resources.dirt.texture)
-            floor.addChild(sprite)
-        }
 
 
     app.loader.onComplete.add(initLevel)
@@ -182,11 +185,11 @@ sound = PIXI.Sound
     gameBackground = new PIXI.Container()
     gameOverScreen = new PIXI.Container()
 
-    gameBackground.visible = false;
-    gameOverScreen.visible = false;
+    // gameBackground.visible = false;
+    gameOverScreen.visible = false; 
 
     let redRect = new PIXI.Graphics()
-    redRect.beginFill(0x00FF00)
+    redRect.beginFill(0x0000FF)
     redRect.drawRect(0, 0, app.view.width, app.view.height);
     titleScreen.addChild(redRect)
 
@@ -197,10 +200,12 @@ sound = PIXI.Sound
     gameOverScreen.addChild(blueRect)
 
 
-    let text1 = new PIXI.Text("Kitty Escape Click 2 to start")
+    let text1 = new PIXI.Text("Kitty Escape Click ME To Enter The Game")
     text1.anchor.set(0.5)
+    text1.interactive = true;
+    text1.buttonMode = true;
     text1.x = app.view.width / 2
-    text1.y = app.view.height / 2
+    text1.y = app.view.height / 4
     text1.style = new PIXI.TextStyle({
         fill: 0x00000,
         fontSize: 40,
@@ -210,23 +215,14 @@ sound = PIXI.Sound
         strokeThickness: 3
     })
 
-    let text2 = new PIXI.Text("Start")
-    text2.anchor.set(0.5)
-    text2.x = app.view.width / 2
-    text2.y = app.view.height / 2
-    text2.style = new PIXI.TextStyle({
-        fill: 0x00000,
-        fontSize: 40,
-        fontStyle: "Arcade",
-        fontStyle: "bold",
-        stroke: 0xFFFFFF,
-        strokeThickness: 3
-    })
 
-    let text3 = new PIXI.Text("Game Over Click 2 to Restart")
+
+   let  text3 = new PIXI.Text("Game Over Refresh Page to Restart")
     text3.anchor.set(0.5)
+    text3.interactive = true;
+    text3.buttonMode = true;
     text3.x = app.view.width / 2
-    text3.y = app.view.height / 2
+    text3.y = app.view.height / 3
     text3.style = new PIXI.TextStyle({
         fill: 0x00000,
         fontSize: 40,
@@ -235,15 +231,17 @@ sound = PIXI.Sound
         stroke: 0xFFFFFF,
         strokeThickness: 3
     })
-
-
-    titleScreen.addChild(text1)
-    gameBackground.addChild(text2)
     gameOverScreen.addChild(text3)
+    // gameOverScreen.addChild(treeform)
 
 
+    // titleScreen.addChild(button)
+    titleScreen.addChild(text1)
+    // gameBackground.addChild(text)
+    
 
-function doneLoading(e) {
+
+    function doneLoading(e) {
     console.log("DONE LOADING!")
 
     objects = new PIXI.Sprite.from(app.loader.resources.objects.texture)
@@ -255,24 +253,27 @@ function doneLoading(e) {
         tree.anchor.set(0.5);
     }
 
-    newTree = new PIXI.Sprite.from(app.loader.resources.background.texture);
-    newTree.x = 200
-    newTree.y = app.view.height / 2
-    newTree.anchor.set(0.5);
+    newTree = new PIXI.Sprite.from(app.loader.resources.defeat.texture);
+    newTree.x = 700
+    newTree.y = app.view.height / 1.5
+    newTree.anchor.set(0.5)
+    
 
-    enemy = new PIXI.Sprite.from(app.loader.resources.enemy.texture);
-    enemy.x = 16
+    enemy = new PIXI.Sprite.from(app.loader.resources.player.texture);
+    enemy.x = app.view.width / 2;
     enemy.y = app.view.height / 2
     enemy.anchor.set(0.5);
 
 
     app.stage.addChild(titleScreen)
     app.stage.addChild(gameOverScreen)
-    app.stage.addChild(floor);
     app.stage.addChild(mainScreen)
+    titleScreen.addChild(enemy)
+    gameOverScreen.addChild(newTree)
 
 
-
+    window.addEventListener("click", RespondClick)
+    window.addEventListener("click", RespondClick2)
     window.addEventListener("keydown", keysDown)
     window.addEventListener("keyup", keysUp)
     window.addEventListener("keydown", switchContainer)
@@ -305,11 +306,20 @@ function doneLoading(e) {
             character.y += character.vy
         }
         if(kb.pressed.Enter) {
+           text2.visible = false
            gameLoop()
         }
 
         })
     }
+}
+
+function RespondClick() {
+    titleScreen.visible = false;
+}
+function RespondClick2() {
+    gameOverScreen.visible = false;
+    restart()
 }
 
 function switchContainer(e) {
@@ -320,10 +330,8 @@ function switchContainer(e) {
             gameOverScreen.visible = false;
             break
         case "2":
-            titleScreen.visible = false;
-            gameBackground.visible = true;
-            gameOverScreen.visible = false;
-            break
+            gameBackground.visible = false
+            restart()
         case "3":
             titleScreen.visible = false;
             gameBackground.visible = false;
@@ -335,8 +343,8 @@ function switchContainer(e) {
 function initLevel() {
 
     background = createBg(app.loader.resources["background"].texture)
-    let dirt = createDirt(app.loader.resources["dirt"].texture)   
-    createTree(app.loader.resources["tree"].texture)
+    dirt = createDirt(app.loader.resources["dirt"].texture)   
+    tree = createTree(app.loader.resources["tree"].texture)
 }
 
 function createMapsheet() {
@@ -344,8 +352,7 @@ function createMapsheet() {
     mapSheet['tree1'] = [new PIXI.Texture(what, PIXI.Rectangle(1, 1, 889, 303))]
 }
 
-function createTree1(texture) 
-{
+function createTree1(texture) {
   obj1 = new PIXI.TilingSprite(texture, 1000, 800)
   obj1.position.set(0.5)
   app.stage.addChild(obj1)
@@ -353,9 +360,26 @@ function createTree1(texture)
   window.obj1 = obj1
 }
 
+function createMainScreenText() {
+    text2 = new PIXI.Text("Press Enter Start, Press J To Jump")
+    text2.anchor.set(0.5)
+    text2.x = app.view.width / 2
+    text2.y = app.view.height / 4
+    text2.style = new PIXI.TextStyle({
+        fill: 0x00000,
+        fontSize: 40,
+        fontStyle: "Arcade",
+        fontStyle: "bold",
+        stroke: 0xFFFFFF,
+        strokeThickness: 3
+    })
+
+    app.stage.addChild(text2)
+}
+
 
 function createBg(texture) {
-    let tiling = new PIXI.TilingSprite(texture, 1000, 800)
+    let tiling = new PIXI.TilingSprite(texture, 1500, 800)
     tiling.position.set(0, 0)
     app.stage.addChild(tiling)
 
@@ -363,7 +387,7 @@ function createBg(texture) {
 }
 
 function createTree(texture) {
-    let tiling2 = new PIXI.TilingSprite(texture, 2000, 800)
+    let tiling2 = new PIXI.TilingSprite(texture, 1500, 800)
     tiling2.position.set(0, 0)
     // tiling2.x = -300
     tiling2.y = - 100
@@ -373,7 +397,7 @@ function createTree(texture) {
 }
 
 function createDirt(texture) {
-    let dirtTiling2 = new PIXI.TilingSprite(texture, 1000, 100)
+    let dirtTiling2 = new PIXI.TilingSprite(texture, 2000, 100)
     dirtTiling2.position.set(0, 0)
     dirtTiling2.x = 0
     dirtTiling2.y = 550
@@ -385,8 +409,8 @@ function doneloadingg(e) {
     createPlayerSheet()
     createDoggySheet()
     createPlayer()
+    createMainScreenText()
     createDoggy()
-    // createMapsheet()
 }
 
 
@@ -435,18 +459,21 @@ function createPlayer() {
     kitty.loop = true;
     kitty.scale.x = .75
     kitty.scale.y = .75
-    kitty.x = 200
+    kitty.x = 300
     kitty.y = 400
     app.stage.addChild(kitty)
     kitty.play()     
 }
 
 function createDoggy() {
-    doggy = new PIXI.AnimatedSprite(enemySheet.stand)
+    doggy = new PIXI.AnimatedSprite(enemySheet.run)
     doggy.anchor.set(0.5);
     doggy.animationSpeed = .5;
+    doggy.loop = true;
     doggy.x = app.view.width / 8;
-    doggy.y = app.view.height / 1.65;
+    doggy.y = app.view.height / 1.67;
+    kitty.scale.x = 0.75;
+    kitty.scale.y = 0.75;
     app.stage.addChild(doggy)
     doggy.play()     
 }
@@ -466,20 +493,17 @@ function playmusic() {
 
 function keysDown(e) {
     keys[e.keyCode] = true;
-    // console.log(e.keyCode())
-    doggy.loop = true
 }
 
 function keysUp(e) {
     keys[e.keyCode] = false;
     // kitty.loop = false;
-    character.vx = 0
 }
 
 
 function gameLoop(delta) {
   
-    doggy.x += 1
+    // doggy.x += 1
 
     sprite.hitArea.x -= 5
     sprite2.hitArea.x -= 5
@@ -493,28 +517,23 @@ function gameLoop(delta) {
   if (sprite2.hitArea.x < 0) {
       resetSpriteHitArea2()
   }
-//   if (sprite3.hitArea.x < 0) {
-//       resetSpriteHitArea()
-//   }
-//   if (sprite4.hitArea.x < 0) {
-//       resetSpriteHitArea2()
-//   }
-  
-     // drawRandomTree()
-    // updateHitArea()
+
     updateBackground()
     updateTree()
     updateDirt()
 
     if (rectsIntersect(kitty, sprite)) {
         console.log("hit")
-       app.ticker.stop()
+        // app.stop()
+        // titleScreen.visible = true
+        // gameOverScreen.visible = true
     }
 
     if (rectsIntersect2(kitty, sprite2)) {
         console.log("hit")
-        app.ticker.stop()
-        // gameOverScreen.visible = true
+        // app.stop()
+        // app.ticker.stop()
+        // gameOverScreen.visible = true;
     }
 
 
@@ -541,15 +560,15 @@ function gameLoop(delta) {
 // }
     
     if (keys["89"]) {
- 
+        app.start()
     }
     
     
       
     // }
 
-    if (keys["74"]) {
-          character.vy =  -16
+    if (keys["74"] && character.y > 450) {
+          character.vy =  -22
         //   drawTree()
         //   updateTree1()
     }
@@ -567,7 +586,6 @@ function rectsIntersect(a,b) {
     let aBox = a.getBounds()
     let bBox = b.hitArea
 
-    aBox.width -= 125
 
    window.aBox = aBox
 
@@ -580,8 +598,6 @@ function rectsIntersect(a,b) {
 function rectsIntersect2(a,b) {
     let aBox = a.getBounds()
     let bBox = b.hitArea
-
-    aBox.width -= 125
 
    window.aBox = aBox
 
@@ -614,10 +630,11 @@ function updateTree() {
 }
 
 function resetSpriteHitArea() {
-    sprite.hitArea.x = 1200
+    
+    sprite.hitArea.x = 1227
 }
 function resetSpriteHitArea2() {
-    sprite2.hitArea.x = 1200
+    sprite2.hitArea.x = 1227
 }
 // function resetSpriteHitArea3() {
 //     sprite3.hitArea.x = 1200
@@ -647,5 +664,9 @@ function drawRandomTree() {
     setInterval(drawTree(), 3000)
 }
 
+function restart() {
+    app.render()
+    app.start()
+}
 
 
