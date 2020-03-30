@@ -518,7 +518,7 @@ function gameLoop(delta) {
 
     if (rectsIntersect(kitty, sprite)) {
         console.log("hit")
-        app.stop()
+        // app.stop()
         // titleScreen.visible = true
         gameOverScreen.visible = true
     }
@@ -624,10 +624,10 @@ function updateTree() {
 }
 
 function resetSpriteHitArea() {
-    sprite.hitArea.x = 1227
+    sprite.hitArea.x = 1230
 }
 function resetSpriteHitArea2() {
-    sprite2.hitArea.x = 1227
+    sprite2.hitArea.x = 1230
 }
 // function resetSpriteHitArea3() {
 //     sprite3.hitArea.x = 1200
