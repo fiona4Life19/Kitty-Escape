@@ -47,7 +47,7 @@ function createPlayerSheet() {
 }
 ```
 
-## Collision Testing. 
+## Collision Testing
 
 Another one of my main challanges was collision testing. I had to incoorperate collision testing for moving objects as well as the stationary objects like the floor.
 
@@ -87,9 +87,15 @@ function gameLoop(delta) {
         if (character.vy < 0) {
             character.y += character.vy
         }
-
 ```
 
+# Future Directions 
+
+* Level Design - A User will have the option between three levels, easy, medium, and hard.
+       
+* Stop, Reset - The user will be able to pause and restart the game
+
+* Sound - There will be sound graphics for the main game screen and for each jump.  
 
 
 
