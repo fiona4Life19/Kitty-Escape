@@ -137,7 +137,7 @@ window.onload = function () {
     sprite.hitArea = new PIXI.Rectangle(795, 350, 1, 800);
     sprite2 = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite2.interactive = true;
-    sprite2.hitArea = new PIXI.Rectangle(1120, 320, 1, 800);
+    sprite2.hitArea = new PIXI.Rectangle(1240, 320, 1, 800);
     // sprite3 = new PIXI.Sprite(app.loader.resources.tree.texture);
     // sprite3.interactive = true
     // sprite3.hitArea = new PIXI.Rectangle(1600, 400, 50, 300);
@@ -283,7 +283,6 @@ window.onload = function () {
 
 
     app.ticker.add(() => {
-        // kitty.x = character.x
         kitty.y = character.y
 
         character.vy = character.vy + 1;
@@ -503,14 +502,9 @@ function keysUp(e) {
 
 function gameLoop(delta) {
   
-    // doggy.x += 1
-
     sprite.hitArea.x -= 5
     sprite2.hitArea.x -= 5
-    // sprite3.hitArea.x -= 5
-    // sprite4.hitArea.x -= 5
-
-
+    
   if (sprite.hitArea.x < 0) {
       resetSpriteHitArea()
   }
@@ -526,14 +520,14 @@ function gameLoop(delta) {
         console.log("hit")
         app.stop()
         // titleScreen.visible = true
-        // gameOverScreen.visible = true
+        gameOverScreen.visible = true
     }
 
     if (rectsIntersect2(kitty, sprite2)) {
         console.log("hit")
         // app.stop()
         // app.ticker.stop()
-        // gameOverScreen.visible = true;
+        gameOverScreen.visible = true;
     }
 
 
@@ -568,7 +562,7 @@ function gameLoop(delta) {
     // }
 
     if (keys["74"] && character.y > 450) {
-          character.vy =  -22
+          character.vy =  -25
         //   drawTree()
         //   updateTree1()
     }
@@ -630,7 +624,6 @@ function updateTree() {
 }
 
 function resetSpriteHitArea() {
-    
     sprite.hitArea.x = 1227
 }
 function resetSpriteHitArea2() {
