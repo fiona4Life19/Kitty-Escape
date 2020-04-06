@@ -1,6 +1,8 @@
-///////// Global Variables//////////
+let tick
 let button
 let text2
+let scoreText
+let score = 0
 let sound 
 let sprite 
 let sprite2
@@ -38,9 +40,6 @@ let character = {
     vx: 0, vy: 0
 }
 
-
-//Canvas//////////////////////
-
 window.onload = function () {
     app = new PIXI.Application(
         {
@@ -50,9 +49,6 @@ window.onload = function () {
         }
     );
 
-
-
-    // let kb = new Keyboard()
     document.body.appendChild(app.view)
     app.view.setAttribute("tabIndex", 0)
 
@@ -63,17 +59,6 @@ window.onload = function () {
     map = {
         width: 16,
         height: 10,
-        tiles: [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
         collision: [
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -91,7 +76,6 @@ window.onload = function () {
         let mapX = Math.floor(worldX / tileSize )
         let mapY = Math.floor(worldY / tileSize )
         return map.collision[mapY * map.width + mapX]
-
     }
 
     class Keyboard {
@@ -115,9 +99,6 @@ window.onload = function () {
     let kb = new Keyboard()
     kb.watch(app.view)
 
-    //////////////////////////////////
-    //preload assets
-
     app.loader.baseUrl = "images";
     app.loader
         .add("player", "/Run_1.png")
@@ -138,32 +119,19 @@ window.onload = function () {
     sprite2 = new PIXI.Sprite(app.loader.resources.tree.texture);
     sprite2.interactive = true;
     sprite2.hitArea = new PIXI.Rectangle(1240, 320, 1, 800);
-    // sprite3 = new PIXI.Sprite(app.loader.resources.tree.texture);
-    // sprite3.interactive = true
-    // sprite3.hitArea = new PIXI.Rectangle(1600, 400, 50, 300);
-    // sprite4 = new PIXI.Sprite(app.loader.resources.tree.texture);
-    // sprite4.interactive = true;
-    // sprite4.hitArea = new PIXI.Rectangle(1800, 400, 50, 300);
-   
-
+    
 
     player = new PIXI.Sprite(app.loader.resources.player.texture)
     player.anchor.set(0.5)
     player.x = app.width / 2
     player.y = app.height / 2
-    // app.stage.addChild(treeform)
-
 
 
     mainScreen = new PIXI.Container()
-    // mainScreen.addChild(treeform)
-
+  
     sound = PIXI.Sound
     
-
-
     app.loader.onComplete.add(initLevel)
-    // app.loader.onStart.add(gameLoop)
     app.loader.load()
     app.loader.load(doneloadingg)
 
@@ -171,21 +139,11 @@ window.onload = function () {
     app.loader.onComplete.add(doneLoading)
     app.loader.onError.add(reportErrors)
 
-   
-
-
-    ///////////////////////////////
-
-    
-
-    //////////////////////////////////
-    //Containers
 
     titleScreen = new PIXI.Container()
     gameBackground = new PIXI.Container()
     gameOverScreen = new PIXI.Container()
 
-    // gameBackground.visible = false;
     gameOverScreen.visible = false; 
 
     let redRect = new PIXI.Graphics()
@@ -215,6 +173,7 @@ window.onload = function () {
         strokeThickness: 3
     })
 
+    
 
 
    let  text3 = new PIXI.Text("Game Over Refresh Page to Restart")
@@ -232,13 +191,7 @@ window.onload = function () {
         strokeThickness: 3
     })
     gameOverScreen.addChild(text3)
-    // gameOverScreen.addChild(treeform)
-
-
-    // titleScreen.addChild(button)
     titleScreen.addChild(text1)
-    // gameBackground.addChild(text)
-    
 
 
     function doneLoading(e) {
@@ -283,6 +236,7 @@ window.onload = function () {
 
 
     app.ticker.add(() => {
+
         kitty.y = character.y
 
         character.vy = character.vy + 1;
@@ -300,7 +254,6 @@ window.onload = function () {
             character.y = character.y + 1;
         }
     }
-
         if (character.vy < 0) {
             character.y += character.vy
         }
@@ -308,8 +261,7 @@ window.onload = function () {
            text2.visible = false
            gameLoop()
         }
-
-        })
+    })
     }
 }
 
@@ -360,6 +312,20 @@ function createTree1(texture) {
 }
 
 function createMainScreenText() {
+    scoreText = new PIXI.Text(score)
+    scoreText.anchor.set(0.5)
+    scoreText.x = app.view.width / 2
+    scoreText.y = app.view.height / 8
+    scoreText.style = new PIXI.TextStyle({
+        fill: 0x00000,
+        fontSize: 40,
+        fontStyle: "Arcade",
+        fontStyle: "bold",
+        stroke: 0xFFFFFF,
+        strokeThickness: 3
+    })
+    app.stage.addChild(scoreText)
+
     text2 = new PIXI.Text("Press Enter Start, Press J To Jump")
     text2.anchor.set(0.5)
     text2.x = app.view.width / 2
@@ -388,7 +354,6 @@ function createBg(texture) {
 function createTree(texture) {
     let tiling2 = new PIXI.TilingSprite(texture, 1500, 800)
     tiling2.position.set(0, 0)
-    // tiling2.x = -300
     tiling2.y = - 100
     app.stage.addChild(tiling2)
 
@@ -410,6 +375,11 @@ function doneloadingg(e) {
     createPlayer()
     createMainScreenText()
     createDoggy()
+    scoreBox()
+}
+
+function scoreBox() {
+    
 }
 
 
@@ -477,15 +447,6 @@ function createDoggy() {
     doggy.play()     
 }
 
-
-// function drawTree(texture) {
-//     tree3 = new PIXI.TilingSprite(texture, 200, 200)
-//     tree3.position.set(0, 0)
-//     tree3.x = 800
-//     tree3.y = 250
-//     app.stage.addChild(tree3)
-// }
-
 function playmusic() {
     PIXI.sound.play("music")
 }
@@ -496,12 +457,24 @@ function keysDown(e) {
 
 function keysUp(e) {
     keys[e.keyCode] = false;
-    // kitty.loop = false;
 }
 
+function secondGameLoop() {
+    app.ticker.add( () => {
+        app.tick += 0.1
+        drawRandomTree()
+    })
+}
 
-function gameLoop(delta) {
-  
+function play() {
+    score += 1
+    scoreText.text = score
+    console.log(score)
+}
+
+function gameLoop() {
+    play()
+    tick += 0.1
     sprite.hitArea.x -= 5
     sprite2.hitArea.x -= 5
     
@@ -518,62 +491,20 @@ function gameLoop(delta) {
 
     if (rectsIntersect(kitty, sprite)) {
         console.log("hit")
-        // app.stop()
-        // titleScreen.visible = true
         gameOverScreen.visible = true
     }
 
     if (rectsIntersect2(kitty, sprite2)) {
-        console.log("hit")
-        // app.stop()
-        // app.ticker.stop()
         gameOverScreen.visible = true;
     }
-
-
-
-    // if (rectsIntersect(kitty, dirt)) {
-    // }
-        //   true
-
-    
-    
-   
-    // if (keys["68"]) {
-    // //   if(!kitty.playing) {
-    // //       kitty.textures = playerSheet.run
-    // //       kitty.loop = true;
-    // //       kitty.animationSpeed = .5
-    // //       kitty.play()
-    // //       character.vx += 2
-    // //     //   drawTree()
-    // //     console.log("hello")    
-    // }
-        
-
-// }
     
     if (keys["89"]) {
         app.start()
     }
-    
-    
-      
-    // }
 
     if (keys["74"] && character.y > 450) {
           character.vy =  -25
-        //   drawTree()
-        //   updateTree1()
     }
-
-    // if(keys["89"]) {
-    //     doggy.textures = enemySheet.rund
-    //     doggy.loop = true;
-    //     doggy.animationSpeed = .5
-    //     doggy.play()
-    //     doggy.x += .5
-    // }
 }
 
 function rectsIntersect(a,b) {
@@ -629,21 +560,10 @@ function resetSpriteHitArea() {
 function resetSpriteHitArea2() {
     sprite2.hitArea.x = 1230
 }
-// function resetSpriteHitArea3() {
-//     sprite3.hitArea.x = 1200
-// }
-// function resetSpriteHitArea4() {
-//     sprite4.hitArea.x = 1200
-// }
-
-
-// function updateTree3() {
-//     tree3.x -= 1
-// }
 
 function drawTree() {
     let newTree = new PIXI.Sprite.from(app.loader.resources.treetest.texture)
-    newTree.x = Math.random(800)
+    newTree.x = Math.random() * 80
     newTree.y = 400
     app.stage.addChild(newTree)
 }
@@ -653,8 +573,10 @@ function updateTree1() {
 }
 
 
-function drawRandomTree() {
-    setInterval(drawTree(), 3000)
+function drawRandomTree(time) {
+    setInterval(
+        drawTree(), time
+    )
 }
 
 function restart() {
